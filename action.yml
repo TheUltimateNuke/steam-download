@@ -1,4 +1,4 @@
-name: 'Download Steam Game'
+name: 'Steam - Download'
 author: 'David Katz'
 description: 'Download a game from Steam using SteamCMD'
 inputs:
