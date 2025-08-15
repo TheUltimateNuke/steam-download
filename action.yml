@@ -1,4 +1,4 @@
-name: 'Steam - Download'
+name: 'Download Steam Game'
 author: 'David Katz'
 description: 'Download a game from Steam using SteamCMD'
 inputs:
@@ -13,8 +13,9 @@ inputs:
     description: 'Steam TOTP code'
     required: false
   vdf:
-    description: 'Path to VDF file containing login details'
+    description: 'Base64-encoded (optionally GZip-compressed) contents of a config.vdf file belonging to an account that owns the downloading game.'
     required: false
+    compressed: false
   appid:
     description: 'Steam AppID'
     required: true
@@ -31,5 +32,6 @@ runs:
         STEAM_PASSWORD: ${{ inputs.password }}
         STEAM_TOTP: ${{ inputs.totp }}
         STEAM_VDF: ${{ inputs.vdf }}
+        STEAM_VDF_IS_COMPRESSED: ${{ inputs.vdf.compressed }}
         STEAM_APP_ID: ${{ inputs.appid }}
         STEAM_GAME_PATH: ${{ inputs.path }}

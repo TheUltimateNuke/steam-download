@@ -37,7 +37,8 @@ $SteamCMDArgs = @(
 
 $LoginMethod = "anonymous"
 
-# If STEAM_TOTP is set, use it to login, else use anonymous login
+# If STEAM_VDF is set, just decode/decompress it and attempt to log in with it
+# If STEAM_TOTP is set, use it to log in, else use anonymous login
 if ($env:STEAM_VDF) {
     Write-Output ""
     Write-Output "#################################"
@@ -45,9 +46,31 @@ if ($env:STEAM_VDF) {
     Write-Output "#################################"
     Write-Output ""
 
+    # HOW TO PROVIDE THIS:
+    # 1. Make sure you're signed into Steam on your device
+    # 2. Go to Program Files (x86)\Steam\config and open config.vdf
+    # 3. Copy everything in that file (CTRL+A, then CTRL+C) and paste it into a *TRUSTWORTHY* GZip compressor (for example, CyberChef). 
+    #    Be careful not to paste this anywhere other people can see it, this file contains extremely personal info
+    # 4. Take the result, paste it into a GitHub secret and pass it in as the STEAM_VDF input
+
     $SteamGuardVDFPath = "$SteamCMDPath\config"
     New-Item -ItemType Directory -Force -Path $SteamGuardVDFPath
-    $DecodedVDF = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($env:STEAM_VDF))
+    $DecodedVDFBytes = [System.Convert]::FromBase64String($env:STEAM_VDF) # Decode Base64-encoded (compressed?) config.vdf info into bytes
+
+    if ($env:STEAM_VDF_IS_COMPRESSED) {
+        $VDFMemoryStream = New-Object System.IO.MemoryStream($DecodedVDFBytes, $false)
+        $DecompressedVDFMemStream = New-Object System.IO.MemoryStream
+
+        $GZipStream = New-Object System.IO.Compression.GZipStream($VDFMemoryStream, [System.IO.Compression.CompressionMode]::Decompress) # Decompress GZip-compressed decoded config.vdf info
+        $GZipStream.CopyTo($DecompressedVDFMemStream)
+
+        $MemStreamReader = New-Object System.IO.StreamReader($DecompressedVDFMemStream)
+        $DecodedVDF = [System.Text.Encoding]::UTF8.GetString($MemStreamReader.ReadToEnd())
+    }
+    else {
+        $DecodedVDF = [System.Text.Encoding]::UTF8.GetString($DecodedVDFBytes)
+    }
+ 
     $DecodedVDF | Out-File "$SteamGuardVDFPath\config.vdf" -Encoding utf8
 
     $LoginMethod = "vdf"
