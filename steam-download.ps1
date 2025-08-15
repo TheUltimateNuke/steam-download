@@ -104,7 +104,7 @@ $SteamPassword = $env:STEAM_PASSWORD ?? ""
 if ($LoginMethod -eq "vdf") {
     $SteamCMDArgs = @(
         "+@ShutdownOnFailedCommand 1"
-        "+login $SteamUsername"
+        "+login `"$SteamUsername`" `"$SteamPassword`""
         "+quit"
     )
 } elseif ($LoginMethod -eq "totp") {
