@@ -34,6 +34,6 @@ runs:
         STEAM_PASSWORD: ${{ inputs.password }}
         STEAM_TOTP: ${{ inputs.totp }}
         STEAM_VDF: ${{ inputs.vdf }}
-        STEAM_VDF_IS_COMPRESSED: ${{ inputs.vdf.compressed }}
+        STEAM_VDF_IS_COMPRESSED: ${{ inputs.vdf_compressed }}
         STEAM_APP_ID: ${{ inputs.appid }}
         STEAM_GAME_PATH: ${{ inputs.path }}
