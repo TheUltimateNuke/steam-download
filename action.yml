@@ -15,7 +15,9 @@ inputs:
   vdf:
     description: 'Base64-encoded (optionally GZip-compressed) contents of a config.vdf file belonging to an account that owns the downloading game.'
     required: false
-    compressed: false
+  vdf_compressed:
+    description: 'Whether the VDF file is GZip-compressed'
+    required: false
   appid:
     description: 'Steam AppID'
     required: true
